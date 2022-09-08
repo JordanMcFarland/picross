@@ -3,16 +3,23 @@ import { Button } from "reactstrap";
 
 const PicrossGrid = (props) => {
   const [grid, setGrid] = useState([
-    ["X", "", "", "X"],
-    ["", "X", "X", ""],
-    ["", "X", "X", ""],
-    ["X", "", "", "X"],
+    ["X", "X", "X", "X", "", ""],
+    ["X", "", "", "X", "", ""],
+    ["X", "", "", "X", "", ""],
+    ["X", "X", "X", "X", "", ""],
+    ["X", "", "", "", "X", "X"],
+    ["X", "", "", "X", "", ""],
   ]);
   const [correctCoords, setCorrectCoords] = useState({});
   const [userCoordinates, setUserCoordinates] = useState({});
+  const [rowColCounts, setRowColCounts] = useState({
+    row: [],
+    col: [],
+  });
 
   useEffect(() => {
     getCorrectCoords();
+    setRowColCounts({ row: getRowCounts(), col: getColCounts() });
   }, []);
 
   useEffect(() => {
@@ -48,24 +55,122 @@ const PicrossGrid = (props) => {
     solved && props.setSolved(true);
   }
 
+  function getRowCounts() {
+    let counter = 0;
+    let rowCountArr = [];
+
+    grid.forEach((row, yIndex) => {
+      const currentRowArr = [];
+      row.forEach((col, xIndex) => {
+        if (col === "X") {
+          counter++;
+        } else {
+          counter > 0 && currentRowArr.push(counter);
+          counter = 0;
+        }
+        if (xIndex === row.length - 1) {
+          if (counter > 0) {
+            currentRowArr.push(counter);
+            counter = 0;
+          } else {
+            if (!currentRowArr.length) {
+              currentRowArr.push(counter);
+            }
+          }
+        }
+      });
+      rowCountArr.push(currentRowArr);
+    });
+
+    console.log(rowCountArr);
+    return rowCountArr;
+  }
+
+  function getColCounts() {
+    let counter = 0;
+    let colCountArr = [];
+
+    for (let xIndex = 0; xIndex < grid[0].length; xIndex++) {
+      const currentColCount = [];
+      grid.forEach((row, yIndex) => {
+        if (row[xIndex] === "X") {
+          counter++;
+        } else {
+          counter > 0 && currentColCount.push(counter);
+          counter = 0;
+        }
+        if (yIndex === grid[0].length - 1) {
+          if (counter > 0) {
+            currentColCount.push(counter);
+            counter = 0;
+          } else {
+            if (!currentColCount.length) {
+              currentColCount.push(counter);
+            }
+          }
+        }
+      });
+      colCountArr.push(currentColCount);
+    }
+
+    console.log(colCountArr);
+    return colCountArr;
+  }
+
   const renderGrid = grid.map((row, yIndex) => {
     return (
-      <div key={yIndex} className="row justify-content-center">
-        {row.map((col, xIndex) => {
-          return (
-            <GridSquare
-              key={xIndex}
-              coordinates={{ x: xIndex, y: yIndex }}
-              setUserCoordinates={setUserCoordinates}
-              userCoordinates={userCoordinates}
-            />
-          );
-        })}
+      <div key={yIndex}>
+        {yIndex === 0 && (
+          <div className="row justify-content-center">
+            <h4
+              className="gridSquare"
+              style={{ textAlign: "center", border: "none" }}
+            ></h4>
+            {rowColCounts.col.map((val, index) => {
+              return (
+                <h4
+                  key={index}
+                  className="gridSquare"
+                  style={{ textAlign: "center", border: "none" }}
+                >
+                  {val.toString()}
+                </h4>
+              );
+            })}
+          </div>
+        )}
+        <div className="row justify-content-center">
+          {rowColCounts.row.length && (
+            <h4
+              className="gridSquare"
+              style={{ textAlign: "center", border: "none", margin: 0 }}
+            >
+              {rowColCounts.row[yIndex].toString()}
+            </h4>
+          )}
+          {row.map((col, xIndex) => {
+            return (
+              <GridSquare
+                key={xIndex}
+                coordinates={{ x: xIndex, y: yIndex }}
+                setUserCoordinates={setUserCoordinates}
+                userCoordinates={userCoordinates}
+              />
+            );
+          })}
+        </div>
       </div>
     );
   });
 
-  return <>{renderGrid}</>;
+  return (
+    <>
+      {renderGrid}
+      <Button onClick={() => console.log(rowColCounts.row[0].toString())}>
+        Row/Col Counts
+      </Button>
+    </>
+  );
 };
 
 const GridSquare = ({ coordinates, userCoordinates, setUserCoordinates }) => {
