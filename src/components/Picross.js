@@ -1,153 +1,175 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "reactstrap";
+import PUZZLES from "../shared/PUZZLES";
 
-const PicrossGrid = (props) => {
-  const [grid, setGrid] = useState([
-    ["X", "X", "X", "X", "", ""],
-    ["X", "", "", "X", "", ""],
-    ["X", "", "", "X", "", ""],
-    ["X", "X", "X", "X", "", ""],
-    ["X", "", "", "", "X", "X"],
-    ["X", "", "", "X", "", ""],
-  ]);
+const PicrossGrid = ({ setSolved }) => {
+  const [grid, setGrid] = useState([["x", ""]]);
   const [correctCoords, setCorrectCoords] = useState({});
   const [userCoordinates, setUserCoordinates] = useState({});
   const [rowColCounts, setRowColCounts] = useState({
     row: [],
     col: [],
   });
+  const [currentTool, setCurrentTool] = useState("fillInTool");
 
+  // Get the correct coordinates of a new puzzle
   useEffect(() => {
+    function getCorrectCoords() {
+      const tempObj = {};
+      grid.forEach((row, yIndex) => {
+        if (!tempObj[yIndex]) tempObj[yIndex] = [];
+        row.forEach((col, xIndex) => {
+          col === "x" && tempObj[yIndex].push(xIndex);
+        });
+      });
+      setCorrectCoords(tempObj);
+    }
     getCorrectCoords();
-    setRowColCounts({ row: getRowCounts(), col: getColCounts() });
-  }, []);
+  }, [grid]);
 
+  // Update the puzzle column and row counts when a new puzzle comes up
   useEffect(() => {
+    console.log(grid);
+    function getRowCounts() {
+      let rowCountArr = [];
+
+      grid.forEach((row, yIndex) => {
+        const currentRowArr = [];
+        let counter = 0;
+        row.forEach((col, xIndex) => {
+          if (col === "x") {
+            counter++;
+          } else {
+            counter > 0 && currentRowArr.push(counter);
+            counter = 0;
+          }
+          if (xIndex === row.length - 1) {
+            if (counter > 0) {
+              currentRowArr.push(counter);
+              counter = 0;
+            } else {
+              if (!currentRowArr.length) {
+                currentRowArr.push(counter);
+              }
+            }
+          }
+        });
+        rowCountArr.push(currentRowArr);
+      });
+      console.log(rowCountArr);
+
+      return rowCountArr;
+    }
+
+    function getColCounts() {
+      let colCountArr = [];
+
+      for (let xIndex = 0; xIndex < grid[0].length; xIndex++) {
+        let counter = 0;
+        const currentColCount = [];
+        grid.forEach((row, yIndex) => {
+          if (row[xIndex] === "x") {
+            counter++;
+          } else {
+            counter > 0 && currentColCount.push(counter);
+            counter = 0;
+          }
+          if (yIndex === grid.length - 1) {
+            if (counter > 0) {
+              currentColCount.push(counter);
+              counter = 0;
+            } else {
+              if (!currentColCount.length) {
+                currentColCount.push(counter);
+              }
+            }
+          }
+        });
+        colCountArr.push(currentColCount);
+      }
+
+      return colCountArr;
+    }
+
+    setRowColCounts({ row: getRowCounts(), col: getColCounts() });
+  }, [grid]);
+
+  // Check if puzzle is correct when user changes an input
+  useEffect(() => {
+    function checkIfPicrossIsCorrect() {
+      const keys = Object.keys(correctCoords);
+
+      const solved = keys.every((key) => {
+        if (userCoordinates[key]) {
+          return (
+            correctCoords[key].every((xValue) =>
+              userCoordinates[key].includes(xValue)
+            ) && correctCoords[key].length === userCoordinates[key].length
+          );
+        }
+        return false;
+      });
+
+      solved && setSolved(true);
+    }
+
     if (Object.keys(userCoordinates).length) {
       checkIfPicrossIsCorrect();
     }
   }, [userCoordinates]);
 
-  function getCorrectCoords() {
-    const tempObj = { ...correctCoords };
-    grid.forEach((row, yIndex) => {
-      if (!tempObj[yIndex]) tempObj[yIndex] = [];
-      row.forEach((col, xIndex) => {
-        col === "X" && tempObj[yIndex].push(xIndex);
-      });
-    });
-    setCorrectCoords(tempObj);
+  function getPuzzle(puzzleSize) {
+    let newPuzzle = [];
+    const keys = Object.keys(PUZZLES[puzzleSize]);
+    const rand = Math.floor(Math.random() * keys.length);
+    const newPuzzleName = keys[rand];
+    console.log(PUZZLES[puzzleSize][newPuzzleName]);
+    newPuzzle = PUZZLES[puzzleSize][newPuzzleName];
+    setSolved(false);
+    setUserCoordinates({});
+    setGrid(newPuzzle);
   }
 
-  function checkIfPicrossIsCorrect() {
-    const keys = Object.keys(correctCoords);
-
-    const solved = keys.every((key) => {
-      if (userCoordinates[key]) {
-        return (
-          correctCoords[key].every((xValue) =>
-            userCoordinates[key].includes(xValue)
-          ) && correctCoords[key].length === userCoordinates[key].length
-        );
-      }
-    });
-
-    solved && props.setSolved(true);
+  function renderColumnNumberRow() {
+    return (
+      <div className="gridRow">
+        <div style={{ width: 40 }}></div>
+        {rowColCounts.col.map((colArr, index) => {
+          return (
+            <div key={index} className="verticalNumContainer">
+              {colArr.map((num, numIndex) => {
+                return (
+                  <div key={numIndex} className="yNumCount">
+                    {num}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    );
   }
 
-  function getRowCounts() {
-    let counter = 0;
-    let rowCountArr = [];
-
-    grid.forEach((row, yIndex) => {
-      const currentRowArr = [];
-      row.forEach((col, xIndex) => {
-        if (col === "X") {
-          counter++;
-        } else {
-          counter > 0 && currentRowArr.push(counter);
-          counter = 0;
-        }
-        if (xIndex === row.length - 1) {
-          if (counter > 0) {
-            currentRowArr.push(counter);
-            counter = 0;
-          } else {
-            if (!currentRowArr.length) {
-              currentRowArr.push(counter);
-            }
-          }
-        }
-      });
-      rowCountArr.push(currentRowArr);
-    });
-
-    console.log(rowCountArr);
-    return rowCountArr;
-  }
-
-  function getColCounts() {
-    let counter = 0;
-    let colCountArr = [];
-
-    for (let xIndex = 0; xIndex < grid[0].length; xIndex++) {
-      const currentColCount = [];
-      grid.forEach((row, yIndex) => {
-        if (row[xIndex] === "X") {
-          counter++;
-        } else {
-          counter > 0 && currentColCount.push(counter);
-          counter = 0;
-        }
-        if (yIndex === grid[0].length - 1) {
-          if (counter > 0) {
-            currentColCount.push(counter);
-            counter = 0;
-          } else {
-            if (!currentColCount.length) {
-              currentColCount.push(counter);
-            }
-          }
-        }
-      });
-      colCountArr.push(currentColCount);
-    }
-
-    console.log(colCountArr);
-    return colCountArr;
+  function renderRowNumbers(yIndex) {
+    return (
+      <div className="horizontalNumContainer">
+        {rowColCounts.row[yIndex]?.map((num, index) => {
+          return (
+            <div key={index} className="xNumCount">
+              <p>{num}</p>
+            </div>
+          );
+        })}
+      </div>
+    );
   }
 
   const renderGrid = grid.map((row, yIndex) => {
     return (
-      <div key={yIndex}>
-        {yIndex === 0 && (
-          <div className="row justify-content-center">
-            <h4
-              className="gridSquare"
-              style={{ textAlign: "center", border: "none" }}
-            ></h4>
-            {rowColCounts.col.map((val, index) => {
-              return (
-                <h4
-                  key={index}
-                  className="gridSquare"
-                  style={{ textAlign: "center", border: "none" }}
-                >
-                  {val.toString()}
-                </h4>
-              );
-            })}
-          </div>
-        )}
-        <div className="row justify-content-center">
-          {rowColCounts.row.length && (
-            <h4
-              className="gridSquare"
-              style={{ textAlign: "center", border: "none", margin: 0 }}
-            >
-              {rowColCounts.row[yIndex].toString()}
-            </h4>
-          )}
+      <>
+        {yIndex === 0 && renderColumnNumberRow()}
+        <div className="gridRow">
+          {rowColCounts.row.length && renderRowNumbers(yIndex)}
           {row.map((col, xIndex) => {
             return (
               <GridSquare
@@ -155,62 +177,83 @@ const PicrossGrid = (props) => {
                 coordinates={{ x: xIndex, y: yIndex }}
                 setUserCoordinates={setUserCoordinates}
                 userCoordinates={userCoordinates}
+                currentTool={currentTool}
               />
             );
           })}
         </div>
-      </div>
+      </>
     );
   });
 
   return (
     <>
       {renderGrid}
-      <Button onClick={() => console.log(rowColCounts.row[0].toString())}>
-        Row/Col Counts
-      </Button>
+      <button onClick={() => getPuzzle("fiveByFive")}>Test</button>
+      <button onClick={() => console.log(correctCoords)}>Grid</button>
+      <ToolSelector currentTool={currentTool} setCurrentTool={setCurrentTool} />
     </>
   );
 };
 
-const GridSquare = ({ coordinates, userCoordinates, setUserCoordinates }) => {
-  const [active, setActive] = useState(false);
-  const [color, setColor] = useState("white");
+const GridSquare = ({
+  coordinates,
+  userCoordinates,
+  setUserCoordinates,
+  currentTool,
+}) => {
+  const [state, setState] = useState("inactive");
 
+  // Update User Inputs
   useEffect(() => {
+    function updateUserCoordinates() {
+      const tempObj = { ...userCoordinates };
+      if (!tempObj[coordinates.y]) tempObj[coordinates.y] = [];
+      if (state === "active") {
+        if (!tempObj[coordinates.y].includes[coordinates.x]) {
+          tempObj[coordinates.y].push(coordinates.x);
+          tempObj[coordinates.y].sort();
+        }
+      } else {
+        const filteredCoords = tempObj[coordinates.y].filter(
+          (xValue) => xValue !== coordinates.x
+        );
+        tempObj[coordinates.y] = filteredCoords;
+      }
+      setUserCoordinates(tempObj);
+    }
+
     updateUserCoordinates();
-  }, [active]);
+  }, [state]);
 
   function toggleGridSquare() {
-    setActive(!active);
-    setColor(color === "white" ? "black" : "white");
-  }
-
-  function updateUserCoordinates() {
-    const tempObj = { ...userCoordinates };
-    if (!tempObj[coordinates.y]) tempObj[coordinates.y] = [];
-    if (active) {
-      if (!tempObj[coordinates.y].includes[coordinates.x]) {
-        tempObj[coordinates.y].push(coordinates.x);
-        tempObj[coordinates.y].sort();
-      }
-    } else {
-      const filteredCoords = tempObj[coordinates.y].filter(
-        (xValue) => xValue !== coordinates.x
-      );
-      tempObj[coordinates.y] = filteredCoords;
+    switch (currentTool) {
+      case "fillInTool":
+        setState(state === "active" ? "inactive" : "active");
+        break;
+      case "xTool":
+        setState(state === "dead" ? "inactive" : "dead");
+        break;
+      default:
+        break;
     }
-    setUserCoordinates(tempObj);
   }
 
   return (
-    <Button
-      className="btn gridSquare"
-      style={{ backgroundColor: color }}
+    <div
+      className="gridSquare"
+      style={{
+        backgroundColor: state === "active" ? "black" : "white",
+        borderColor: state === "active" ? "grey" : "black",
+        height: 38,
+        width: 38,
+      }}
       onClick={() => {
         toggleGridSquare();
       }}
-    />
+    >
+      {state === "dead" && <p style={{ userSelect: "none" }}>X</p>}
+    </div>
   );
 };
 
@@ -218,15 +261,28 @@ const Picross = () => {
   const [solved, setSolved] = useState(false);
 
   return (
-    <div className="container mt-5">
+    <div className="picrossContainer">
       <PicrossGrid setSolved={setSolved} />
-      {solved && (
-        <div className="row mt-3 justify-content-center">
-          <div className="col-4">
-            <h3 style={{ textAlign: "center" }}>You did It!</h3>
-          </div>
-        </div>
-      )}
+      {solved && <h3 style={{ textAlign: "center" }}>You did It!</h3>}
+    </div>
+  );
+};
+
+const ToolSelector = ({ currentTool, setCurrentTool }) => {
+  return (
+    <div className="toolBar">
+      <div
+        className="fillInTool"
+        onClick={() => setCurrentTool("fillInTool")}
+        style={{ borderWidth: currentTool === "fillInTool" && 5 }}
+      />
+      <div
+        className="xTool"
+        onClick={() => setCurrentTool("xTool")}
+        style={{ borderWidth: currentTool === "xTool" && 5 }}
+      >
+        <p style={{ userSelect: "none" }}>X</p>
+      </div>
     </div>
   );
 };

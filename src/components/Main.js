@@ -4,10 +4,10 @@ import Picross from "./Picross";
 
 const Main = () => {
   return (
-    <>
+    <div className="mainContainer">
       <Header />
       <Picross />
-    </>
+    </div>
   );
 };
 
