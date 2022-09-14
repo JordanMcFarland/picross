@@ -21,6 +21,7 @@ h1 {
   border-radius: 8px;
   padding: 8px;
   margin-left: 4%;
+  margin-right: 24px;
 }
 
 .picrossContainer {
@@ -167,4 +168,11 @@ select {
   .yNumCount {
     width: 40px
   }
+}
+
+img {
+  image-rendering: -moz-crisp-edges; /* Firefox */
+image-rendering: -o-crisp-edges; /* Opera */
+image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
+image-rendering: crisp-edges;
 }
