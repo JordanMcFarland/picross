@@ -50,7 +50,7 @@ h1 {
 
 .yNumCount {
   text-align: center;
-  width: 40px;
+  width: 24px;
   height: 20px;
 }
 
@@ -58,21 +58,27 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 40px;
+  height: 24px;
   width: 20px;
 }
 
 .gridSquare {
   display: flex;
-  border: 1px solid black;
-  width: 38px;
-  height: 38px;
+  outline: 1px solid black;
+  width: 24px;
+  height: 24px;
   align-items: center;
   justify-content: center;
+  user-select: none;
 }
 
 .gridSquare:hover, .fillInTool:hover, .xTool:hover {
   cursor: pointer;
+}
+
+.gridSquare:hover {
+  outline-width: 3px;
+  z-index: 5;
 }
 
 .toolBar {
@@ -86,15 +92,15 @@ h1 {
 }
 
 .fillInTool {
-  width: 38px;
-  height: 38px;
-  border: 1px solid gray;
+  width: 24px;
+  height: 24px;
+  outline: 1px solid gray;
   background-color: black;
 }
 
 .removeTool {
-  width: 38px;
-  height: 38px;
+  width: 24px;
+  height: 24px;
   border: 1px solid black;
 }
 
@@ -102,7 +108,63 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid black;
+  width: 24px;
+  height: 24px;
+  outline: 1px solid black;
+}
+
+button {
+  background-color: rgb(122, 104, 238);
+  border: 2px solid rgb(147, 74, 237);
+  border-radius: 4px;
+  color: white;
+  font-size: 16px;
+  margin-right: 8px;
+  padding: 4px;
+}
+
+button:hover, select:hover {
+  background-color: rgb(105, 87, 219);
+}
+
+button:active, select:active {
+  background-color: rgb(84, 67, 191);
+}
+
+select {
+  font-size: 16px;
+  color: white;
+  padding: 4px;
+  background-color: rgb(122, 104, 238);
+  border: 2px solid rgb(147, 74, 237);
+  border-radius: 4px;
+  accent-color: green;
+}
+
+/* Tablet */
+@media only screen and (min-width: 576px) {
+  .gridSquare, .fillInTool, .xTool {
+    width: 32px;
+    height: 32px;
+  }
+  .xNumCount {
+    height: 32px
+  }
+  .yNumCount {
+    width: 32px
+  }
+}
+
+/* Desktop */
+@media only screen and (min-width: 768px) {
+  .gridSquare, .fillInTool, .xTool {
+    width: 40px;
+    height: 40px;
+  }
+  .xNumCount {
+    height: 40px
+  }
+  .yNumCount {
+    width: 40px
+  }
 }
