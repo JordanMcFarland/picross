@@ -270,7 +270,6 @@ const PicrossGrid = ({ setSolved }) => {
           <option value="tenByTen">10x10</option>
           <option value="fifteenByFifteen">15x15</option>
         </select>
-        <button onClick={() => console.log(grid)}>Grid</button>
       </div>
     </>
   );
