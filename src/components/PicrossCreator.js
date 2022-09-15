@@ -52,26 +52,50 @@ const PicrossCreator = () => {
 
   const renderGrid = grid.map((row, yIndex) => {
     return (
-      <div key={yIndex} className="gridRow">
-        {row.map((col, xIndex) => {
-          return (
-            <GridSquare
-              key={xIndex}
-              x={xIndex}
-              y={yIndex}
-              state={col.state}
-              coordinates={{ x: xIndex, y: yIndex }}
-              currentTool={"fillInTool"}
-              dragging={dragging}
-              setDragging={setDragging}
-              dragState={dragState}
-              setDragState={setDragState}
-              grid={grid}
-              setGrid={setGrid}
-            />
-          );
-        })}
-      </div>
+      <>
+        {/* Include barrier to outline 5x5 grid */}
+        {yIndex > 0 && yIndex % 5 === 0 && (
+          <div className="gridRow">
+            {grid[0].map((col, xIndex) => {
+              return (
+                <div
+                  className="rowBarrier"
+                  // Compensate for vertical barrier with this styling
+                  style={{
+                    paddingLeft: xIndex > 0 && xIndex % 5 === 0 && 2,
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
+        <div key={yIndex} className="gridRow">
+          {row.map((col, xIndex) => {
+            return (
+              <>
+                {/* Include barrier to outline 5x5 grid */}
+                {xIndex > 0 && xIndex % 5 === 0 && (
+                  <div className="colBarrier" />
+                )}
+                <GridSquare
+                  key={xIndex}
+                  x={xIndex}
+                  y={yIndex}
+                  state={col.state}
+                  coordinates={{ x: xIndex, y: yIndex }}
+                  currentTool={"fillInTool"}
+                  dragging={dragging}
+                  setDragging={setDragging}
+                  dragState={dragState}
+                  setDragState={setDragState}
+                  grid={grid}
+                  setGrid={setGrid}
+                />
+              </>
+            );
+          })}
+        </div>
+      </>
     );
   });
 
@@ -92,16 +116,10 @@ const PicrossCreator = () => {
           id="xValue"
           onChange={(e) => setGridSize({ ...gridSize, x: e.target.value })}
         >
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
           <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
           <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
         </select>
         <label htmlFor="yValue">Height: </label>
         <select
@@ -110,16 +128,9 @@ const PicrossCreator = () => {
           id="yValue"
           onChange={(e) => setGridSize({ ...gridSize, y: e.target.value })}
         >
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
           <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
           <option value="10">10</option>
+          <option value="15">15</option>
         </select>
         <button onClick={() => handleSubmit()}>Submit</button>
       </div>

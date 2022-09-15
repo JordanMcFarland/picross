@@ -65,9 +65,9 @@ h1 {
 
 .gridSquare {
   display: flex;
-  outline: 1px solid black;
-  width: 24px;
-  height: 24px;
+  border: 1px solid rgb(128, 128, 128, .5);
+  width: 22px;
+  height: 22px;
   align-items: center;
   justify-content: center;
   user-select: none;
@@ -78,7 +78,7 @@ h1 {
 }
 
 .gridSquare:hover {
-  outline-width: 3px;
+  outline: 3px solid rgb(128, 128, 128, .8);
   z-index: 5;
 }
 
@@ -86,7 +86,7 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  border: 2px solid black;
+  border: 2px solid rgb(10, 10, 59);
   border-radius: 8px;
   padding: 16px 16px;
   margin-top: 16px;
@@ -111,7 +111,7 @@ h1 {
   align-items: center;
   width: 24px;
   height: 24px;
-  outline: 1px solid black;
+  outline: 1px solid gray;
 }
 
 button {
@@ -142,37 +142,71 @@ select {
   accent-color: green;
 }
 
+.timer {
+  display: inline-flex;
+        flex-direction: row;
+        border: 2px solid rgb(10, 10, 59);
+        border-radius: 8px;
+        padding: 4px;
+        background-color: white;
+}
+
+.rowBarrier {
+  background-color: black;
+  width: 22px;
+  z-index: 2;
+  border: 1px black solid
+}
+
+.colBarrier {
+  background-color: black;
+  height: 22px;
+  z-index: 2;
+  border: 1px black solid
+}
+
 /* Tablet */
 @media only screen and (min-width: 576px) {
   .gridSquare, .fillInTool, .xTool {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
   }
   .xNumCount {
-    height: 32px
+    height: 32px;
   }
   .yNumCount {
     width: 32px
+  }
+
+  .rowBarrier {
+    width: 30px
+  }
+
+  .colBarrier {
+    height: 30px
   }
 }
 
 /* Desktop */
 @media only screen and (min-width: 768px) {
   .gridSquare, .fillInTool, .xTool {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
   }
   .xNumCount {
-    height: 40px
+    height: 40px;
   }
-  .yNumCount {
-    width: 40px
-  }
-}
 
-img {
-  image-rendering: -moz-crisp-edges; /* Firefox */
-image-rendering: -o-crisp-edges; /* Opera */
-image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
-image-rendering: crisp-edges;
+
+  .yNumCount {
+    width: 40px;
+  }
+
+  .rowBarrier {
+    width: 38px
+  }
+
+  .colBarrier {
+    height: 38px
+  }
 }

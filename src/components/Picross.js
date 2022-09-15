@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import GridSquare from "./GridSquare";
+import Timer from "./Timer";
 import PUZZLES from "../shared/PUZZLES";
 
 const PicrossGrid = ({ setSolved }) => {
@@ -12,6 +13,8 @@ const PicrossGrid = ({ setSolved }) => {
   const [dragging, setDragging] = useState(false);
   const [dragState, setDragState] = useState();
   const [newGridSize, setNewGridSize] = useState("fiveByFive");
+  const [timer, setTimer] = useState(0);
+  const [timerIsActive, setTimerIsActive] = useState(true);
 
   // Listen for mouse up anywhere on screen so drag state updates properly
   useEffect(() => {
@@ -103,6 +106,7 @@ const PicrossGrid = ({ setSolved }) => {
         });
       });
 
+      setTimerIsActive(!puzzleSolved);
       setSolved(puzzleSolved);
     }
 
@@ -117,6 +121,7 @@ const PicrossGrid = ({ setSolved }) => {
     newPuzzle = setANewGrid(PUZZLES[puzzleSize][newPuzzleName]);
     setSolved(false);
     setGrid(newPuzzle);
+    setTimer(0);
   }
 
   function setANewGrid(newPuzzle) {
@@ -140,7 +145,13 @@ const PicrossGrid = ({ setSolved }) => {
       <div className="gridRow">
         {rowColCounts.col.map((colArr, index) => {
           return (
-            <div key={index} className="verticalNumContainer">
+            <div
+              key={index}
+              className="verticalNumContainer"
+              style={{
+                marginLeft: index > 0 && index % 5 === 0 && 2,
+              }}
+            >
               {colArr.map((num, numIndex) => {
                 return (
                   <div
@@ -177,24 +188,46 @@ const PicrossGrid = ({ setSolved }) => {
     return (
       <>
         {yIndex === 0 && renderColumnNumberRow()}
+        {/* Include barrier to outline 5x5 grid */}
+        {yIndex > 0 && yIndex % 5 === 0 && (
+          <div className="gridRow">
+            {grid[0].map((col, xIndex) => {
+              return (
+                <div
+                  className="rowBarrier"
+                  // Compensate for vertical barrier with this styling
+                  style={{
+                    paddingLeft: xIndex > 0 && xIndex % 5 === 0 && 2,
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
         <div key={yIndex} className="gridRow">
           {rowColCounts.row.length && renderRowNumbers(yIndex)}
           {row.map((col, xIndex) => {
             return (
-              <GridSquare
-                key={xIndex}
-                x={xIndex}
-                y={yIndex}
-                state={col.state}
-                coordinates={{ x: xIndex, y: yIndex }}
-                currentTool={currentTool}
-                dragging={dragging}
-                setDragging={setDragging}
-                dragState={dragState}
-                setDragState={setDragState}
-                grid={grid}
-                setGrid={setGrid}
-              />
+              <>
+                {/* Include barrier to outline 5x5 grid */}
+                {xIndex > 0 && xIndex % 5 === 0 && (
+                  <div className="colBarrier" />
+                )}
+                <GridSquare
+                  key={xIndex}
+                  x={xIndex}
+                  y={yIndex}
+                  state={col.state}
+                  coordinates={{ x: xIndex, y: yIndex }}
+                  currentTool={currentTool}
+                  dragging={dragging}
+                  setDragging={setDragging}
+                  dragState={dragState}
+                  setDragState={setDragState}
+                  grid={grid}
+                  setGrid={setGrid}
+                />
+              </>
             );
           })}
         </div>
@@ -204,7 +237,15 @@ const PicrossGrid = ({ setSolved }) => {
 
   return (
     <>
+      <div>
+        <Timer
+          timer={timer}
+          setTimer={setTimer}
+          timerIsActive={timerIsActive}
+        />
+      </div>
       {renderGrid}
+      <ToolSelector currentTool={currentTool} setCurrentTool={setCurrentTool} />
       <div
         style={{
           marginTop: 16,
@@ -227,9 +268,10 @@ const PicrossGrid = ({ setSolved }) => {
         >
           <option value="fiveByFive">5x5</option>
           <option value="tenByTen">10x10</option>
+          <option value="fifteenByFifteen">15x15</option>
         </select>
+        <button onClick={() => console.log(grid)}>Grid</button>
       </div>
-      <ToolSelector currentTool={currentTool} setCurrentTool={setCurrentTool} />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const GridSquare = ({
   coordinates,
@@ -10,7 +10,13 @@ const GridSquare = ({
   grid,
   setGrid,
   state,
+  x,
+  y,
 }) => {
+  useEffect(() => {
+    console.log(grid.length && x === 4);
+  }, []);
+
   function getDragState() {
     switch (currentTool) {
       case "fillInTool":
@@ -22,7 +28,7 @@ const GridSquare = ({
   }
 
   // update the state of the toggled grid square
-  function ToggleGridSquare() {
+  function toggleGridSquare() {
     const newGrid = [...grid];
     let toState;
 
@@ -54,14 +60,13 @@ const GridSquare = ({
       className="gridSquare"
       style={{
         backgroundColor: state === "active" ? "black" : "white",
-        outlineColor: state === "active" ? "grey" : "black",
       }}
       onMouseDown={() => {
-        ToggleGridSquare();
+        toggleGridSquare();
         getDragState();
         setDragging(true);
       }}
-      onMouseOver={() => dragging && ToggleGridSquare()}
+      onMouseOver={() => dragging && toggleGridSquare()}
     >
       {state === "dead" && <p style={{ userSelect: "none" }}>X</p>}
     </div>
