@@ -1,5 +1,42 @@
 const PUZZLES = {
   fiveByFive: {
+    test: [
+      [
+        { state: "inactive", color: "#00007e" },
+        { state: "inactive", color: "#00007e" },
+        { state: "inactive", color: "#00007e" },
+        { state: "inactive", color: "#00007e" },
+        { state: "inactive", color: "#00007e" },
+      ],
+      [
+        { state: "inactive", color: "#00007e" },
+        { state: "inactive", color: "#00007e" },
+        { state: "inactive", color: "#00007e" },
+        { state: "inactive", color: "#00007e" },
+        { state: "inactive", color: "#00007e" },
+      ],
+      [
+        { state: "inactive", color: "#00007e" },
+        { state: "inactive", color: "#00007e" },
+        { state: "inactive", color: "#00007e" },
+        { state: "inactive", color: "#00007e" },
+        { state: "inactive", color: "#00007e" },
+      ],
+      [
+        { state: "inactive", color: null },
+        { state: "inactive", color: null },
+        { state: "inactive", color: null },
+        { state: "inactive", color: null },
+        { state: "inactive", color: null },
+      ],
+      [
+        { state: "inactive", color: null },
+        { state: "inactive", color: null },
+        { state: "inactive", color: null },
+        { state: "inactive", color: null },
+        { state: "inactive", color: null },
+      ],
+    ],
     circle: [
       ["", "x", "x", "x", ""],
       ["x", "", "", "", "x"],

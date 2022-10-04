@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import Picross from "./Picross";
 import PicrossCreator from "./PicrossCreator";
+import ColorSelector from "./ColorSelector";
 
 const Main = () => {
   const [currentPage, setCurrentPage] = useState("picross");
@@ -9,14 +10,28 @@ const Main = () => {
 
   useEffect(() => {}, []);
 
+  function getCurrentPage() {
+    switch (currentPage) {
+      case "picross":
+        return <Picross puzzles={puzzles} />;
+      case "picrossCreator":
+        return <PicrossCreator />;
+      case "colorPicker":
+        return <ColorSelector />;
+      default:
+        return <h3>Something went wrong</h3>;
+    }
+  }
+
   return (
     <div className="mainContainer">
       <Header currentPage={currentPage} setCurrentPage={setCurrentPage} />
-      {currentPage === "picross" ? (
+      {getCurrentPage()}
+      {/* {currentPage === "picross" ? (
         <Picross puzzles={puzzles} />
       ) : (
         <PicrossCreator />
-      )}
+      )} */}
     </div>
   );
 };

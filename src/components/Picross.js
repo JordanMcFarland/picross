@@ -40,7 +40,7 @@ const PicrossGrid = ({ setSolved }) => {
         const currentRowArr = [];
         let counter = 0;
         row.forEach((col, xIndex) => {
-          if (col.marked) {
+          if (col.color) {
             counter++;
           } else {
             counter > 0 && currentRowArr.push(counter);
@@ -69,7 +69,7 @@ const PicrossGrid = ({ setSolved }) => {
         let counter = 0;
         const currentColCount = [];
         grid.forEach((row, yIndex) => {
-          if (row[xIndex].marked) {
+          if (row[xIndex].color) {
             counter++;
           } else {
             counter > 0 && currentColCount.push(counter);
@@ -100,8 +100,8 @@ const PicrossGrid = ({ setSolved }) => {
     function checkIfPicrossIsCorrect() {
       const puzzleSolved = grid.every((row) => {
         return row.every((col) => {
-          if (col.marked && col.state === "active") return true;
-          else if (!col.marked && col.state !== "active") return true;
+          if (col.color && col.state === "active") return true;
+          else if (!col.color && col.state !== "active") return true;
           else return false;
         });
       });
@@ -117,28 +117,29 @@ const PicrossGrid = ({ setSolved }) => {
     let newPuzzle = [];
     const keys = Object.keys(PUZZLES[puzzleSize]);
     const rand = Math.floor(Math.random() * keys.length);
-    const newPuzzleName = keys[rand];
-    newPuzzle = setANewGrid(PUZZLES[puzzleSize][newPuzzleName]);
+    const newPuzzleName = keys[0];
+    console.log(PUZZLES[puzzleSize][newPuzzleName]);
+    //newPuzzle = setANewGrid(PUZZLES[puzzleSize][newPuzzleName]);
     setSolved(false);
-    setGrid(newPuzzle);
+    setGrid(PUZZLES[puzzleSize][newPuzzleName]);
     setTimer(0);
   }
 
-  function setANewGrid(newPuzzle) {
-    let newGrid = [];
-    newPuzzle.forEach((row) => {
-      const currentRow = [];
-      row.forEach((xIndex) => {
-        const xIndexObj = { marked: false, state: "inactive" };
-        if (xIndex === "x") {
-          xIndexObj.marked = true;
-        }
-        currentRow.push(xIndexObj);
-      });
-      newGrid.push(currentRow);
-    });
-    return newGrid;
-  }
+  // function setANewGrid(newPuzzle) {
+  //   let newGrid = [];
+  //   newPuzzle.forEach((row) => {
+  //     const currentRow = [];
+  //     row.forEach((xIndex) => {
+  //       const xIndexObj = { marked: false, state: "inactive" };
+  //       if (xIndex === "x") {
+  //         xIndexObj.marked = true;
+  //       }
+  //       currentRow.push(xIndexObj);
+  //     });
+  //     newGrid.push(currentRow);
+  //   });
+  //   return newGrid;
+  // }
 
   function renderColumnNumberRow() {
     return (
