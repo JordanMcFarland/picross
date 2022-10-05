@@ -13,6 +13,9 @@ const Header = ({ currentPage, setCurrentPage }) => {
       >
         {currentPage === "picross" ? "Create a Picross" : "Play Picross"}
       </button>
+      <button onClick={() => setCurrentPage("animationTest")}>
+        Animation Test
+      </button>
     </div>
   );
 };

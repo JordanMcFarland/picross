@@ -50,7 +50,6 @@ const PicrossCreator = () => {
       formattedGrid.push(currentRow);
     });
     console.log(JSON.stringify(grid));
-    console.log(JSON.stringify(formattedGrid));
   }
 
   const renderGrid = grid.map((row, yIndex) => {

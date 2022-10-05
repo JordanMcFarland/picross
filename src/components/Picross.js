@@ -3,7 +3,7 @@ import GridSquare from "./GridSquare";
 import Timer from "./Timer";
 import PUZZLES from "../shared/PUZZLES";
 
-const PicrossGrid = ({ setSolved }) => {
+const PicrossGrid = ({ setSolved, solved }) => {
   const [grid, setGrid] = useState([[]]);
   const [rowColCounts, setRowColCounts] = useState({
     row: [],
@@ -98,13 +98,19 @@ const PicrossGrid = ({ setSolved }) => {
   // Check if puzzle is correct when user changes a grid square state
   useEffect(() => {
     function checkIfPicrossIsCorrect() {
-      const puzzleSolved = grid.every((row) => {
-        return row.every((col) => {
-          if (col.color && col.state === "active") return true;
-          else if (!col.color && col.state !== "active") return true;
-          else return false;
+      let puzzleSolved = false;
+      if (grid.length > 1) {
+        puzzleSolved = grid.every((row) => {
+          console.log(grid);
+          return row.every((col) => {
+            if (col.color && col.state === "active") return true;
+            else if (!col.color && col.state !== "active") return true;
+            else return false;
+          });
         });
-      });
+      }
+
+      console.log("puzzle Solved", puzzleSolved);
 
       setTimerIsActive(!puzzleSolved);
       setSolved(puzzleSolved);
@@ -118,7 +124,6 @@ const PicrossGrid = ({ setSolved }) => {
     const keys = Object.keys(PUZZLES[puzzleSize]);
     const rand = Math.floor(Math.random() * keys.length);
     const newPuzzleName = keys[0];
-    console.log(PUZZLES[puzzleSize][newPuzzleName]);
     //newPuzzle = setANewGrid(PUZZLES[puzzleSize][newPuzzleName]);
     setSolved(false);
     setGrid(PUZZLES[puzzleSize][newPuzzleName]);
@@ -227,6 +232,8 @@ const PicrossGrid = ({ setSolved }) => {
                   setDragState={setDragState}
                   grid={grid}
                   setGrid={setGrid}
+                  solved={solved}
+                  color={col.color}
                 />
               </>
             );
@@ -279,9 +286,13 @@ const PicrossGrid = ({ setSolved }) => {
 const Picross = () => {
   const [solved, setSolved] = useState(false);
 
+  useEffect(() => {
+    console.log(solved);
+  }, [solved]);
+
   return (
     <div className="picrossContainer">
-      <PicrossGrid setSolved={setSolved} />
+      <PicrossGrid setSolved={setSolved} solved={solved} />
       {solved && <h3 style={{ textAlign: "center" }}>You did It!</h3>}
     </div>
   );

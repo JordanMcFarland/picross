@@ -3,6 +3,7 @@ import Header from "./Header";
 import Picross from "./Picross";
 import PicrossCreator from "./PicrossCreator";
 import ColorSelector from "./ColorSelector";
+import AnimationTest from "./AnimationTest";
 
 const Main = () => {
   const [currentPage, setCurrentPage] = useState("picross");
@@ -16,8 +17,8 @@ const Main = () => {
         return <Picross puzzles={puzzles} />;
       case "picrossCreator":
         return <PicrossCreator />;
-      case "colorPicker":
-        return <ColorSelector />;
+      case "animationTest":
+        return <AnimationTest />;
       default:
         return <h3>Something went wrong</h3>;
     }
