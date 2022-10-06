@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import GridSquare from "./GridSquare";
 import Timer from "./Timer";
 import PUZZLES from "../shared/PUZZLES";
+import { Transition } from "react-transition-group";
+import RowNumber from "./RowNumber";
+import ColumnNumberRow from "./ColumnNumberRow";
 
 const PicrossGrid = ({ setSolved, solved }) => {
   const [grid, setGrid] = useState([[]]);
@@ -193,7 +196,9 @@ const PicrossGrid = ({ setSolved, solved }) => {
   const renderGrid = grid.map((row, yIndex) => {
     return (
       <>
-        {yIndex === 0 && renderColumnNumberRow()}
+        {yIndex === 0 && (
+          <ColumnNumberRow rowColCounts={rowColCounts} solved={solved} />
+        )}
         {/* Include barrier to outline 5x5 grid */}
         {yIndex > 0 && yIndex % 5 === 0 && (
           <div className="gridRow">
@@ -211,7 +216,13 @@ const PicrossGrid = ({ setSolved, solved }) => {
           </div>
         )}
         <div key={yIndex} className="gridRow">
-          {rowColCounts.row.length && renderRowNumbers(yIndex)}
+          {rowColCounts.row.length && (
+            <RowNumber
+              solved={solved}
+              yIndex={yIndex}
+              rowColCounts={rowColCounts}
+            />
+          )}
           {row.map((col, xIndex) => {
             return (
               <>
@@ -245,7 +256,7 @@ const PicrossGrid = ({ setSolved, solved }) => {
 
   return (
     <>
-      <div>
+      <div style={{ marginBottom: 8 }}>
         <Timer
           timer={timer}
           setTimer={setTimer}

@@ -1,24 +1,58 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Transition } from "react-transition-group";
 
 const AnimationTestDiv = ({ color, solved }) => {
   const nodeRef = useRef(null);
 
+  useEffect(() => {
+    console.log(nodeRef);
+  }, []);
+
   const duration = 3000;
 
   const defaultStyle = {
-    width: 50,
-    height: 50,
+    width: 0,
+    height: 0,
     backgroundColor: "white",
     transition: `all ${duration}ms ease-in-out`,
     outline: "solid",
+    visibility: "visible",
   };
 
   const transitionStyles = {
-    entering: { backgroundColor: color, outline: "solid 0px" },
-    entered: { backgroundColor: color, outline: "none" },
-    exiting: { backgroundColor: "white", outline: "solid" },
-    exited: { backgroundColor: "white", outline: "solid" },
+    entering: {
+      backgroundColor: color,
+      outline: "solid 0px",
+      visibility: "visible",
+      width: 50,
+      height: 50,
+      display: "block",
+      fontSize: 16,
+    },
+    entered: {
+      backgroundColor: color,
+      outline: "none",
+      visibility: "visible",
+      height: 50,
+      width: 50,
+    },
+    exiting: {
+      backgroundColor: "white",
+      outline: "solid",
+      opacity: 0,
+      width: 0,
+      height: 0,
+      fontSize: 0,
+    },
+    exited: {
+      backgroundColor: "white",
+      outline: "solid",
+      opacity: 0,
+      visibility: "hidden",
+      height: 0,
+      width: 0,
+      fontSize: 0,
+    },
   };
 
   return (
@@ -31,7 +65,9 @@ const AnimationTestDiv = ({ color, solved }) => {
               ...defaultStyle,
               ...transitionStyles[state],
             }}
-          ></div>
+          >
+            text
+          </div>
         )}
       </Transition>
     </div>

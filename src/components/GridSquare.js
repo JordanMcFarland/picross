@@ -58,24 +58,36 @@ const GridSquare = ({
 
   // Animation Info
 
-  const duration = 3000;
+  const duration = 1000;
 
   // being overridden by transition styles?
   const defaultStyle = {
     backgroundColor: state === "active" ? "black" : "white",
     border: "1px solid rgb(128, 128, 128, .5)",
-    transition: `all ${duration}ms ease-in-out`,
+    transition: !solved ? null : `all ${duration}ms ease-in-out`,
   };
 
   const transitionStyles = {
-    entering: { backgroundColor: color, border: "solid 0px" },
-    entered: { backgroundColor: color, border: "none" },
-    exiting: { backgroundColor: "white" },
-    exited: { backgroundColor: "white" },
+    entering: {
+      backgroundColor: color,
+      border: "solid 0px rgb(128, 128, 128, 0)",
+      outline: "none",
+    },
+    entered: {
+      backgroundColor: color,
+      border: "none",
+      outline: "none",
+    },
+    exiting: { backgroundColor: state === "active" ? "black" : "white" },
+    exited: { backgroundColor: state === "active" ? "black" : "white" },
   };
 
   return (
-    <Transition nodeRef={nodeRef} in={solved} enter={false} timeout={duration}>
+    <Transition
+      nodeRef={nodeRef}
+      in={solved}
+      timeout={{ appear: 0, enter: 3000, exit: 0 }}
+    >
       {(transState) => (
         <div
           className="gridSquare"
@@ -89,9 +101,11 @@ const GridSquare = ({
           //     solved && color ? color : state === "active" ? "black" : "white",
           // }}
           onMouseDown={() => {
-            toggleGridSquare();
-            getDragState();
-            setDragging(true);
+            if (!solved) {
+              toggleGridSquare();
+              getDragState();
+              setDragging(true);
+            }
           }}
           onMouseOver={() => dragging && toggleGridSquare()}
         >
